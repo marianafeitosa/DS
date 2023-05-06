@@ -58,7 +58,7 @@ public class Cadastrar extends JFrame {
          cadastrar.setBounds(200,200,100,20);
          
          
-         // nãp entendi como usa o try e o catch , vou usar em quais situações? 
+         // não entendi como usa o try e o catch , vou usar em quais situações? 
         try{
             mascaracep = new MaskFormatter("#####-###");
             mascaratel = new MaskFormatter("(##)######-####");
