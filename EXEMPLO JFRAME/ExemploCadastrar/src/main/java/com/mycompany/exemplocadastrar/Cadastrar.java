@@ -56,7 +56,9 @@ public class Cadastrar extends JFrame {
         rotulocpf.setBounds(50,120,100,20);
         rotulodata.setBounds(50,160,100,20);
          cadastrar.setBounds(200,200,100,20);
-        
+         
+         
+         // nãp entendi como usa o try e o catch , vou usar em quais situações? 
         try{
             mascaracep = new MaskFormatter("#####-###");
             mascaratel = new MaskFormatter("(##)######-####");
