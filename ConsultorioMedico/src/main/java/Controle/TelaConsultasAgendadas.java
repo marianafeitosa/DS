@@ -32,23 +32,23 @@ public class TelaConsultasAgendadas extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Configurando o ícone (substitua pelo caminho do seu ícone)
+        // Configurando o ï¿½cone (substitua pelo caminho do seu ï¿½cone)
         ImageIcon icone = new ImageIcon("caminho/do/seu/icone.png");
         setIconImage(icone.getImage());
 
-        // Simulando dados de consultas agendadas (você deve buscar esses dados do banco de dados)
+        // Simulando dados de consultas agendadas (vocï¿½ deve buscar esses dados do banco de dados)
         Vector<Vector<String>> dados = new Vector<>();
         Vector<String> colunas = new Vector<>();
         colunas.add("Nome Paciente");
         colunas.add("Especialidade");
-        colunas.add("Médico");
+        colunas.add("Mï¿½dico");
         colunas.add("Data Consulta");
-        colunas.add("Horário Consulta");
+        colunas.add("Horï¿½rio Consulta");
         colunas.add("Email");
 
         // Adicione dados de exemplo (substitua pelos dados do banco)
         Vector<String> consulta1 = new Vector<>();
-        consulta1.add("João Silva");
+        consulta1.add("Joï¿½o Silva");
         consulta1.add("Cardiologia");
         consulta1.add("Dr. Oliveira");
         consulta1.add("2023-12-01");
@@ -77,7 +77,7 @@ public class TelaConsultasAgendadas extends JFrame {
 
         setVisible(true);
     }
-
+ 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new TelaConsultasAgendadas());
     }

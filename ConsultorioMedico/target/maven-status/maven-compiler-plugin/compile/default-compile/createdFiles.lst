@@ -1,2 +1,6 @@
+Controle\TelaConsultasAgendadas.class
+Controle\TelaAgendamento.class
 Controle\Usuario.class
+Conexao\Conexao.class
 Controle\Consulta.class
+Controle\Login.class

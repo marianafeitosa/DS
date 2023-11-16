@@ -10,6 +10,7 @@ import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.ImageIcon;
@@ -27,16 +28,16 @@ import javax.swing.SwingUtilities;
  * @author maria
  */
 public class TelaAgendamento extends JFrame {
-    private JTextField tfNomePaciente;
+
+   private JTextField tfNomePaciente;
     private JComboBox<String> cbEspecialidade;
     private JComboBox<String> cbNomeMedico;
     private JTextField tfDataConsulta;
     private JComboBox<String> cbHorarioConsulta;
-    private JTextField tfEmail;
+    private JTextField tfNome;
     private JPasswordField pfSenha;
     private JButton btnAgendarConsulta;
 
-    // Simule alguns dados de exemplo
     private String[] especialidades = {"Cardiologia", "Dermatologia", "Ginecologia", "Oftalmologia"};
     private String[] medicos = {"Dr. Silva", "Dra. Santos", "Dr. Oliveira", "Dra. Pereira"};
     private String[] horarios = {"08:00", "10:00", "14:00", "16:00"};
@@ -44,7 +45,7 @@ public class TelaAgendamento extends JFrame {
     public TelaAgendamento() {
         initComponents();
     }
-
+ 
     private void initComponents() {
         setTitle("Agendamento de Consultas");
         setSize(500, 400);
@@ -55,7 +56,6 @@ public class TelaAgendamento extends JFrame {
         tela.setLayout(new GridLayout(8, 2, 10, 10));
         tela.setBackground(Color.WHITE);
 
-        // Configurando o ícone
         ImageIcon icone = new ImageIcon("caminho/do/seu/icone.png");
         setIconImage(icone.getImage());
 
@@ -65,19 +65,19 @@ public class TelaAgendamento extends JFrame {
         JLabel lblEspecialidade = new JLabel("Especialidade:");
         cbEspecialidade = new JComboBox<>(especialidades);
 
-        JLabel lblNomeMedico = new JLabel("Nome do Médico:");
+        JLabel lblNomeMedico = new JLabel("Nome do MÃ©dico:");
         cbNomeMedico = new JComboBox<>(medicos);
 
         JLabel lblDataConsulta = new JLabel("Data da Consulta:");
         tfDataConsulta = new JTextField();
         tfDataConsulta.setText(obterDataAtual());
 
-        JLabel lblHorarioConsulta = new JLabel("Horário da Consulta:");
+        JLabel lblHorarioConsulta = new JLabel("HorÃ¡rio da Consulta:");
         cbHorarioConsulta = new JComboBox<>(horarios);
         cbHorarioConsulta.setSelectedItem(obterHorarioAtual());
 
-        JLabel lblEmail = new JLabel("Email:");
-        tfEmail = new JTextField();
+        JLabel lblNome = new JLabel("Nome:");
+        tfNome = new JTextField();
 
         JLabel lblSenha = new JLabel("Senha:");
         pfSenha = new JPasswordField();
@@ -95,50 +95,47 @@ public class TelaAgendamento extends JFrame {
         tela.add(tfDataConsulta);
         tela.add(lblHorarioConsulta);
         tela.add(cbHorarioConsulta);
-        tela.add(lblEmail);
-        tela.add(tfEmail);
+        tela.add(lblNome);
+        tela.add(tfNome);
         tela.add(lblSenha);
         tela.add(pfSenha);
-        tela.add(new JLabel()); // Espaço em branco
+        tela.add(new JLabel()); // EspaÃ§o em branco
         tela.add(btnAgendarConsulta);
 
         setVisible(true);
     }
 
     private void realizarAgendamento() {
-        // Implemente a lógica de agendamento aqui
         String nomePaciente = tfNomePaciente.getText();
         String especialidade = (String) cbEspecialidade.getSelectedItem();
         String nomeMedico = (String) cbNomeMedico.getSelectedItem();
         String dataConsulta = tfDataConsulta.getText();
         String horarioConsulta = (String) cbHorarioConsulta.getSelectedItem();
-        String email = tfEmail.getText();
+        String nome = tfNome.getText();
         char[] senha = pfSenha.getPassword();
 
-        // Validar campos obrigatórios
-        if (nomePaciente.isEmpty() || email.isEmpty() || senha.length == 0) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios.",
+        if (nomePaciente.isEmpty() || nome.isEmpty() || senha.length == 0) {
+            JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatÃ³rios.",
                     "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Adicione a lógica para salvar o agendamento no banco de dados
         try {
             Conexao conexao = new Conexao();
             if (conexao.conecta()) {
-                String inserirConsulta = "INSERT INTO consulta (nome_paciente, especialidade, nome_medico, "
-                        + "data_consulta, horario_consulta, email, senha) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                
+                String inserirConsulta = "INSERT INTO agendamento ( especialidade, nome_medico, "
+                        + "data_consulta, horario_consulta, nome, senha) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
                 conexao.executaSQL(inserirConsulta, nomePaciente, especialidade, nomeMedico,
-                        dataConsulta, horarioConsulta, email, new String(senha));
+                        dataConsulta, horarioConsulta, nome, new String(senha));
 
                 JOptionPane.showMessageDialog(this, "Consulta agendada com sucesso!");
-                dispose(); // Fechar a janela após o agendamento
+                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados.",
                         "Erro", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao agendar consulta.",
                     "Erro", JOptionPane.ERROR_MESSAGE);
@@ -146,7 +143,7 @@ public class TelaAgendamento extends JFrame {
     }
 
     private String obterDataAtual() {
-        return new SimpleDateFormat("DD/MM/YYYY").format("DD/MM/YYYY");
+        return new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
     }
 
     private String obterHorarioAtual() {

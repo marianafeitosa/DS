@@ -23,19 +23,21 @@ import javax.swing.SwingUtilities;
  * @author mariana
  */
 public class Login extends JFrame {
+
     private Conexao conexao;
     private JTextField tfUsuario;
     private JPasswordField pfSenha;
-    private JButton btnLogin; // Usando o botão arredondado
+    private JButton btnLogin; // Usando o botï¿½o arredondado
     private JLabel mensagemErro;
 
-    public Login() {
+    public Login() throws SQLException {
         conexao = new Conexao();
+        conexao.conecta();
         initComponents();
     }
 
     private void initComponents() {
-        // Configurações gerais do JFrame
+        // Configuraï¿½ï¿½es gerais do JFrame
         setTitle("Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(450, 300);
@@ -43,27 +45,27 @@ public class Login extends JFrame {
         setResizable(false);
 
         Container tela = getContentPane();
-        tela.setBackground(Color.WHITE); // Configuração da cor de fundo
+        tela.setBackground(Color.WHITE); // Configuraï¿½ï¿½o da cor de fundo
 
-        // Configuração do ícone
+        // Configuraï¿½ï¿½o do ï¿½cone
         ImageIcon icone = new ImageIcon("src/Logo.png");
         setIconImage(icone.getImage());
 
-        // Configuração dos ícones para usuário e senha
+        // Configuraï¿½ï¿½o dos ï¿½cones para usuï¿½rio e senha
         ImageIcon usua = new ImageIcon("src/pessoa.png");
         ImageIcon se = new ImageIcon("src/cadeado.png");
 
-        // Configuração do campo de usuário
+        // Configuraï¿½ï¿½o do campo de usuï¿½rio
         tfUsuario = new JTextField(10);
         tfUsuario.setBounds(140, 80, 150, 30);
         tela.add(tfUsuario);
 
-        // Configuração do campo de senha
+        // Configuraï¿½ï¿½o do campo de senha
         pfSenha = new JPasswordField(10);
         pfSenha.setBounds(140, 120, 150, 30);
         tela.add(pfSenha);
 
-        // Configuração dos rótulos
+        // Configuraï¿½ï¿½o dos rï¿½tulos
         JLabel usuario = new JLabel(usua);
         usuario.setBounds(95, 75, 50, 40);
         tela.add(usuario);
@@ -72,61 +74,71 @@ public class Login extends JFrame {
         senha.setBounds(95, 115, 50, 40);
         tela.add(senha);
 
-        // Configuração do botão de login
+        // Configuraï¿½ï¿½o do botï¿½o de login
         btnLogin = new JButton("Entrar");
-        btnLogin.setBackground(new Color(228, 141, 122)); // Cor do botão (azul)
-        btnLogin.setForeground(Color.WHITE); // Cor do texto do botão
+        btnLogin.setBackground(new Color(228, 141, 122)); // Cor do botï¿½o (azul)
+        btnLogin.setForeground(Color.WHITE); // Cor do texto do botï¿½o
         btnLogin.setBounds(165, 170, 100, 40);
         btnLogin.setHorizontalTextPosition(JButton.CENTER);
         btnLogin.setVerticalTextPosition(JButton.CENTER);
         btnLogin.addActionListener((ActionEvent e) -> realizarLogin());
         tela.add(btnLogin);
 
-        // Configuração da mensagem de erro
+        // Configuraï¿½ï¿½o da mensagem de erro
         mensagemErro = new JLabel();
         mensagemErro.setForeground(Color.RED); // Cor do texto de erro
-        mensagemErro.setBounds(100, 237, 300, 20); // Posição da mensagem de erro
+        mensagemErro.setBounds(100, 237, 300, 20); // Posiï¿½ï¿½o da mensagem de erro
         tela.add(mensagemErro);
 
         setVisible(true);
     }
 
     private void realizarLogin() {
-    try {
-        String pesquisa = "select * from usuario where Usuario = ? and Senha = ?";
-        conexao.executaSQL(pesquisa, tfUsuario.getText(), new String(pfSenha.getPassword()));
+        try {
+            String usuario = tfUsuario.getText();
+            String senha = new String(pfSenha.getPassword());
 
-        if (conexao.resultset.first()) {
-            String tipoUsuario = conexao.resultset.getString("TipoUsuario");
+            String pesquisa = "SELECT * FROM usuario WHERE usuario = ? AND senha = ?";
+            conexao.executaSQL(pesquisa, usuario, senha);
 
-            if ("Paciente".equals(tipoUsuario)) {
-                // Acesso permitido para Paciente
-                JOptionPane.showMessageDialog(null, "Login Efetuado com sucesso \n Seja Bem Vindo: " + tfUsuario.getText());
+            if (conexao.resultset.next()) {
+                String tipoUsuario = conexao.resultset.getString("TipoUsuario");
 
-                // Redirecione para a tela de agendamento de consultas
-                TelaAgendamento telaAgendamento = new TelaAgendamento();
-                telaAgendamento.setVisible(true);
-                dispose();
-            } else if ("Medico".equals(tipoUsuario)) {
-                // Acesso permitido para Médico
-                JOptionPane.showMessageDialog(null, "Login Efetuado com sucesso \n Seja Bem Vindo: " + tfUsuario.getText());
+                if ("Paciente".equals(tipoUsuario)) {
+                    // Acesso permitido para Paciente
+                    JOptionPane.showMessageDialog(null, "Login Efetuado com sucesso \n Seja Bem Vindo: " + tfUsuario.getText());
+ 
+                    // Redirecione para a tela de agendamento de consultas
+                    TelaAgendamento telaAgendamento = new TelaAgendamento();
+                    telaAgendamento.setVisible(true);
+                    dispose();
+                } else if ("Medico".equals(tipoUsuario)) {
+                    // Acesso permitido para Mï¿½dico
+                    JOptionPane.showMessageDialog(null, "Login Efetuado com sucesso \n Seja Bem Vindo: " + tfUsuario.getText());
 
-                // Redirecione para a tela de consultas agendadas
-                TelaConsultasAgendadas telaConsultasAgendadas = new TelaConsultasAgendadas();
-                telaConsultasAgendadas.setVisible(true);
-                dispose();
+                    // Redirecione para a tela de consultas agendadas
+                    TelaConsultasAgendadas telaConsultasAgendadas = new TelaConsultasAgendadas();
+                    telaConsultasAgendadas.setVisible(true);
+                    dispose();
+                } else {
+                    // Tipo de usuï¿½rio desconhecido
+                    mensagemErro.setText("Tipo de usuï¿½rio desconhecido.");
+                }
             } else {
-                // Tipo de usuário desconhecido
-                mensagemErro.setText("Tipo de usuário desconhecido.");
+                // Acesso negado
+                mensagemErro.setText("Usuï¿½rio ou senha incorretos.");
+
             }
-        } else {
-            // Acesso negado
-            mensagemErro.setText("Usuário ou senha incorretos.");
+        } catch (SQLException excecao) {
+            // Trate exceï¿½ï¿½es aqui
+            excecao.printStackTrace();
         }
-    } catch (SQLException excecao) {
-        // Trate exceções aqui
-        excecao.printStackTrace();
+
     }
-}
+
+    public static void main(String[] args) throws SQLException {
+        Login app = new Login();
+        app.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
 
 }

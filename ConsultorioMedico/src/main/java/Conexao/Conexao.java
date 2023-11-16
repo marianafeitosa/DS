@@ -29,21 +29,22 @@ public class Conexao {
         try {
             Class.forName(driver);
             conexao = DriverManager.getConnection(url, usuario, senha);
+            JOptionPane.showMessageDialog(null, "Conectou com o Banco");
         } catch (ClassNotFoundException Driver) {
-            JOptionPane.showMessageDialog(null, "Driver não localizado" + Driver, "Mensagem do programa", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Driver nï¿½o localizado" + Driver, "Mensagem do programa", JOptionPane.ERROR_MESSAGE);
             result = false;
         } catch (SQLException Fonte) {
-            JOptionPane.showMessageDialog(null, "Fonte de dados não localizada!" + Fonte, "Mensagem do programa", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Fonte de dados nï¿½o localizada!" + Fonte, "Mensagem do programa", JOptionPane.INFORMATION_MESSAGE);
             result = false;
         }
         return result;
     }
-
+ 
     public void desconecta() {
         try {
             if (conexao != null) {
                 conexao.close();
-                JOptionPane.showMessageDialog(null, "Conexão com o banco fechada", "Mensagem do programa", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Conexï¿½o com o banco fechada", "Mensagem do programa", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException fecha) {
             JOptionPane.showMessageDialog(null, "Erro ao fechar o banco", "Mensagem do Programa", JOptionPane.INFORMATION_MESSAGE);
@@ -54,7 +55,7 @@ public class Conexao {
         try {
             preparedStatement = conexao.prepareStatement(sql);
 
-            // Substitui os parâmetros na query
+            // Substitui os parï¿½metros na query
             for (int i = 0; i < parametros.length; i++) {
                 preparedStatement.setObject(i + 1, parametros[i]);
             }
