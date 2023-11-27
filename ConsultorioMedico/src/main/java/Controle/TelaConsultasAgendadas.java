@@ -6,12 +6,20 @@ package Controle;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -32,41 +40,22 @@ public class TelaConsultasAgendadas extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Configurando o �cone (substitua pelo caminho do seu �cone)
+        // Configurando o ícone (substitua pelo caminho do seu ícone)
         ImageIcon icone = new ImageIcon("caminho/do/seu/icone.png");
         setIconImage(icone.getImage());
 
-        // Simulando dados de consultas agendadas (voc� deve buscar esses dados do banco de dados)
-        Vector<Vector<String>> dados = new Vector<>();
+        Vector<Vector<String>> dados = buscarDadosDoBanco();
+
         Vector<String> colunas = new Vector<>();
         colunas.add("Nome Paciente");
         colunas.add("Especialidade");
-        colunas.add("M�dico");
+        colunas.add("Médico");
         colunas.add("Data Consulta");
-        colunas.add("Hor�rio Consulta");
+        colunas.add("Horário Consulta");
         colunas.add("Email");
 
-        // Adicione dados de exemplo (substitua pelos dados do banco)
-        Vector<String> consulta1 = new Vector<>();
-        consulta1.add("Jo�o Silva");
-        consulta1.add("Cardiologia");
-        consulta1.add("Dr. Oliveira");
-        consulta1.add("2023-12-01");
-        consulta1.add("08:00");
-        consulta1.add("joao@email.com");
-
-        Vector<String> consulta2 = new Vector<>();
-        consulta2.add("Maria Santos");
-        consulta2.add("Dermatologia");
-        consulta2.add("Dra. Pereira");
-        consulta2.add("2023-12-02");
-        consulta2.add("10:00");
-        consulta2.add("maria@email.com");
-
-        dados.add(consulta1);
-        dados.add(consulta2);
-
-        tabelaConsultas = new JTable(dados, colunas);
+        DefaultTableModel model = new DefaultTableModel(dados, colunas);
+        tabelaConsultas = new JTable(model);
         tabelaConsultas.setAutoCreateRowSorter(true);
 
         scrollPane = new JScrollPane(tabelaConsultas);
@@ -75,9 +64,53 @@ public class TelaConsultasAgendadas extends JFrame {
         tela.setLayout(new BorderLayout());
         tela.add(scrollPane, BorderLayout.CENTER);
 
+        JButton btnAtualizar = new JButton("Atualizar Tabela");
+        btnAtualizar.addActionListener(e -> atualizarTabela());
+        tela.add(btnAtualizar, BorderLayout.SOUTH);
+
         setVisible(true);
     }
- 
+
+    private Vector<Vector<String>> buscarDadosDoBanco() {
+        Vector<Vector<String>> dados = new Vector<>();
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/sistemamedico", "root", "");
+
+            String query = "SELECT nome_paciente, especialidade, nome_medico, data_consulta, horario_consulta, email FROM agendamento";
+            try (PreparedStatement statement = connection.prepareStatement(query);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    Vector<String> linha = new Vector<>();
+                    linha.add(resultSet.getString("nome_paciente"));
+                    linha.add(resultSet.getString("especialidade"));
+                    linha.add(resultSet.getString("nome_medico"));
+                    linha.add(resultSet.getString("data_consulta"));
+                    linha.add(resultSet.getString("horario_consulta"));
+                    linha.add(resultSet.getString("email"));
+                    dados.add(linha);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao buscar dados do banco de dados.",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return dados;
+    }
+
+    void atualizarTabela() {
+        DefaultTableModel model = (DefaultTableModel) tabelaConsultas.getModel();
+        model.setRowCount(0); // Limpa todas as linhas da tabela
+
+        Vector<Vector<String>> novosDados = buscarDadosDoBanco();
+        for (Vector<String> linha : novosDados) {
+            model.addRow(linha);
+        }
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new TelaConsultasAgendadas());
     }

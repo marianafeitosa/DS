@@ -29,12 +29,14 @@ import javax.swing.SwingUtilities;
  */
 public class TelaAgendamento extends JFrame {
 
-   private JTextField tfNomePaciente;
+    private JTextField tfNomePaciente;
     private JComboBox<String> cbEspecialidade;
     private JComboBox<String> cbNomeMedico;
     private JTextField tfDataConsulta;
     private JComboBox<String> cbHorarioConsulta;
-    private JTextField tfNome;
+    // Remover a label e o campo de texto relacionado ao nome
+    // JLabel lblNome = new JLabel("Nome:");
+    // tfNome = new JTextField();
     private JPasswordField pfSenha;
     private JButton btnAgendarConsulta;
 
@@ -45,7 +47,7 @@ public class TelaAgendamento extends JFrame {
     public TelaAgendamento() {
         initComponents();
     }
- 
+
     private void initComponents() {
         setTitle("Agendamento de Consultas");
         setSize(500, 400);
@@ -76,8 +78,9 @@ public class TelaAgendamento extends JFrame {
         cbHorarioConsulta = new JComboBox<>(horarios);
         cbHorarioConsulta.setSelectedItem(obterHorarioAtual());
 
-        JLabel lblNome = new JLabel("Nome:");
-        tfNome = new JTextField();
+        // Remover a label e o campo de texto relacionado ao nome
+        // JLabel lblNome = new JLabel("Nome:");
+        // tfNome = new JTextField();
 
         JLabel lblSenha = new JLabel("Senha:");
         pfSenha = new JPasswordField();
@@ -95,8 +98,9 @@ public class TelaAgendamento extends JFrame {
         tela.add(tfDataConsulta);
         tela.add(lblHorarioConsulta);
         tela.add(cbHorarioConsulta);
-        tela.add(lblNome);
-        tela.add(tfNome);
+        // Remover a label e o campo de texto relacionado ao nome
+        // tela.add(lblNome);
+        // tela.add(tfNome);
         tela.add(lblSenha);
         tela.add(pfSenha);
         tela.add(new JLabel()); // Espaço em branco
@@ -105,42 +109,44 @@ public class TelaAgendamento extends JFrame {
         setVisible(true);
     }
 
-    private void realizarAgendamento() {
-        String nomePaciente = tfNomePaciente.getText();
-        String especialidade = (String) cbEspecialidade.getSelectedItem();
-        String nomeMedico = (String) cbNomeMedico.getSelectedItem();
-        String dataConsulta = tfDataConsulta.getText();
-        String horarioConsulta = (String) cbHorarioConsulta.getSelectedItem();
-        String nome = tfNome.getText();
-        char[] senha = pfSenha.getPassword();
+  private void realizarAgendamento() {
+    String nomePaciente = tfNomePaciente.getText();
+    String especialidade = (String) cbEspecialidade.getSelectedItem();
+    String nomeMedico = (String) cbNomeMedico.getSelectedItem();
+    String dataConsulta = tfDataConsulta.getText();
+    String horarioConsulta = (String) cbHorarioConsulta.getSelectedItem();
+    char[] senha = pfSenha.getPassword();
 
-        if (nomePaciente.isEmpty() || nome.isEmpty() || senha.length == 0) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios.",
-                    "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            Conexao conexao = new Conexao();
-            if (conexao.conecta()) {
-                String inserirConsulta = "INSERT INTO agendamento ( especialidade, nome_medico, "
-                        + "data_consulta, horario_consulta, nome, senha) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-                conexao.executaSQL(inserirConsulta, nomePaciente, especialidade, nomeMedico,
-                        dataConsulta, horarioConsulta, nome, new String(senha));
-
-                JOptionPane.showMessageDialog(this, "Consulta agendada com sucesso!");
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados.",
-                        "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao agendar consulta.",
-                    "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+    if (nomePaciente.isEmpty() || senha.length == 0) {
+        JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios.",
+                "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+
+    try {
+        Conexao conexao = new Conexao();
+        if (conexao.conecta()) {
+            String inserirConsulta = "INSERT INTO agendamento (especialidade, nome_medico, "
+                    + "data_consulta, horario_consulta, senha) VALUES (?, ?, ?, ?, ?)";
+
+            // Alteração aqui para execução de update
+            conexao.executaUpdate(inserirConsulta, especialidade, nomeMedico,
+                    dataConsulta, horarioConsulta, new String(senha));
+
+            JOptionPane.showMessageDialog(this, "Consulta agendada com sucesso!");
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados.",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Erro ao agendar consulta.",
+                "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+
 
     private String obterDataAtual() {
         return new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
