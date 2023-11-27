@@ -65,6 +65,8 @@ public class Conexao {
             JOptionPane.showMessageDialog(null, "Erro no comando SQL! \n Erro: " + excecao, "Mensagem do programa", JOptionPane.INFORMATION_MESSAGE);
         }
     }
+
+    
     
     
     

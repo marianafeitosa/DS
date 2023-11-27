@@ -129,9 +129,7 @@ public class TelaAgendamento extends JFrame {
             String inserirConsulta = "INSERT INTO agendamento (especialidade, nome_medico, "
                     + "data_consulta, horario_consulta, senha) VALUES (?, ?, ?, ?, ?)";
 
-            // Alteração aqui para execução de update
-            conexao.executaUpdate(inserirConsulta, especialidade, nomeMedico,
-                    dataConsulta, horarioConsulta, new String(senha));
+           
 
             JOptionPane.showMessageDialog(this, "Consulta agendada com sucesso!");
             dispose();
@@ -144,6 +142,8 @@ public class TelaAgendamento extends JFrame {
         JOptionPane.showMessageDialog(this, "Erro ao agendar consulta.",
                 "Erro", JOptionPane.ERROR_MESSAGE);
     }
+    
+    
 }
 
 

@@ -44,12 +44,12 @@ public class Login extends JFrame {
 
     private void initComponents() {
         setLayout(null);  // Defina o layout como nulo para posicionamento absoluto
-
+    
         // Imagem de fundo
-        ImagePanel backgroundPanel = new ImagePanel("src/imagens/fundo.jpg"); // Substitua pelo caminho real da sua imagem de fundo
+        ImagePanel backgroundPanel = new ImagePanel("src/imagens/fundologin.jpg"); // Substitua pelo caminho real da sua imagem de fundo
         backgroundPanel.setBounds(0, 0, getWidth(), getHeight());
         add(backgroundPanel);
-
+ 
         // Defina o painel de conteúdo como um painel transparente
         setContentPane(new JPanel(null));
 

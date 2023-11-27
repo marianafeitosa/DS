@@ -100,7 +100,7 @@ public class TelaConsultasAgendadas extends JFrame {
 
         return dados;
     }
-
+  
     void atualizarTabela() {
         DefaultTableModel model = (DefaultTableModel) tabelaConsultas.getModel();
         model.setRowCount(0); // Limpa todas as linhas da tabela
